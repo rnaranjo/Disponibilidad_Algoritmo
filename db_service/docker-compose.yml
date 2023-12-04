@@ -1,0 +1,16 @@
+version: "3.11"
+
+services:
+  flask_app:
+    container_name: scm_challenge_db_service
+    image: rnaranjo/scm_challenge_db_service:1.0.0
+    networks:
+      - backend
+    build: .
+    ports:
+      - "4001:4001"
+
+networks:
+  backend:
+    name: backend
+    external: true

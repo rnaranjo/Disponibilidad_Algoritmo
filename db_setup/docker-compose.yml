@@ -4,6 +4,8 @@ services:
   db_setup:
     container_name: scm_challenge_db_setup
     image: rnaranjo/scm_challenge_db_setup:1.0.0
+    networks:
+      - backend
     build: .
     environment:
       - DB_URL=postgresql://postgres:postgres@postgres:5432/postgres
@@ -14,6 +16,8 @@ services:
   postgres:
     container_name: postgres
     image: postgres:12
+    networks:
+      - backend
     ports:
       - "5432:5432"
     environment:
@@ -30,3 +34,7 @@ services:
 
 volumes:
   pgdata: {}
+
+networks:
+  backend:
+    name: backend
