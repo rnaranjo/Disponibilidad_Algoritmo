@@ -1,0 +1,10 @@
+name,Inicio_Turno,Fin_Turno,Tipo_Turno
+madrugada FT,0:00,8:00,mañana
+morning FT,7:00,15:00,mañana
+tarde FT,11:00,19:00,tarde
+cierre FT,16:00,0:00,noche
+noche FT,14:00,22:00,noche
+mañana PT,8:00,12:00,mañana
+tarde 1 PT,12:00,16:00,tarde
+tarde 2 PT,14:00,18:00,tarde
+noche PT,18:00,22:00,noche
