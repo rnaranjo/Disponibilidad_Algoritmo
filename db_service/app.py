@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify, make_response, render_template
 from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
-from datetime import timedelta
+from datetime import timedelta, datetime
+import requests
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@postgres:5432/postgres'
@@ -79,7 +81,6 @@ def write_availability():
 
   # Perform calculations before sending it to model microservice
   forecast_by_day['fecha'] = forecast_by_day['fecha'].astype('datetime64[ns]')
-  dates = forecast_by_day['fecha'].dt.date.unique()
   forecast_by_day['week'] = forecast_by_day['fecha'].dt.isocalendar().week
   forecast_by_day['day'] = forecast_by_day['fecha'].dt.isocalendar().day
 
@@ -95,7 +96,34 @@ def write_availability():
   forecast_json = forecast_by_day.to_json(orient="records")
   shift_json = shifts.to_json(orient="records")
 
-  return make_response(jsonify({
-    "forecasts": forecast_json,
-    "shifts": shift_json
-  }), 200)
+  response = requests.post(
+    "http://model_service:4002/calculate_availability",
+    headers={"Content-Type": "application/json"},
+    json={"forecasts":forecast_json,"shifts":shift_json}
+  )
+
+  if response.status_code == 200:
+    text = json.loads(response.text)
+    availability_json = json.loads(text)
+    print(availability_json,flush=True)
+    print(type(availability_json),flush=True)
+    availabilities = []
+    for availability in availability_json:
+    	print(availability)
+    	print(type(availability),flush=True)
+    	# Convert JSON data to a model object
+    	availabilities.append(Availability(
+    	  collaborator=availability["collaborator"],
+    	  date=datetime.fromtimestamp(availability["date"]/1000),
+    	  availability=availability["availability"],
+    	  week=availability["week"],
+    	  day=availability["day"] 
+    	))
+
+    # Add all the objects to the database session
+    db.session.add_all(availabilities)
+    # Commit the changes to the database
+    db.session.commit()
+    return make_response(jsonify(availability_json), 200)
+  else:
+    return make_response(jsonify({"error": "There was a problem processing the data."}), 400)

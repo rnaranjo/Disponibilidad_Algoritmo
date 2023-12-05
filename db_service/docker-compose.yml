@@ -1,7 +1,7 @@
 version: "3.11"
 
 services:
-  flask_app:
+  db_service:
     container_name: scm_challenge_db_service
     image: rnaranjo/scm_challenge_db_service:1.0.0
     networks:
