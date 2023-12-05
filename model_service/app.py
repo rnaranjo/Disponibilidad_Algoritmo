@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 import pandas as pd
 from math import ceil
-from datetime import timedelta
 
 app = Flask(__name__)
 
@@ -28,10 +27,9 @@ def calculate_availability():
     response.status_code = 400
     return response
 
+  # Read pandas dataframe from json
   forecast_json = json_data["forecasts"]
-  shift_json = json_data["shifts"]
   forecast_by_day = pd.read_json(forecast_json)
-  shifts = pd.read_json(shift_json)
 
   k1= 1
   k2 = 2
@@ -115,6 +113,7 @@ def calculate_availability():
         df_availability.loc[filter2, "availability"] = 0
         j+=1
 
+  # Convert availability dataframe to json to send it to database service
   availability_json = df_availability.to_json(orient="records")
   
   return make_response(jsonify(availability_json), 200)

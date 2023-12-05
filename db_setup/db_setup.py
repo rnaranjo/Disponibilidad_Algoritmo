@@ -40,6 +40,7 @@ class Availability(Base):
 # Create the tables
 Base.metadata.create_all(bind=engine)
 
+# Load initial database with forecast and shifts data
 with open("forecast_by_day.csv", 'r') as file:
     data_df = pd.read_csv(file)
 
