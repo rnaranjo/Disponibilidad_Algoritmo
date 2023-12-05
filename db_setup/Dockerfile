@@ -8,4 +8,5 @@ RUN pip install -r requirements.txt
 
 # Execute script
 COPY . .
+EXPOSE 5432
 CMD ["python", "db_setup.py"]
