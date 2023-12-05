@@ -40,9 +40,10 @@ class Availability(Base):
 # Create the tables
 Base.metadata.create_all(bind=engine)
 
-with open("forecast.csv", 'r') as file:
+with open("forecast_by_day.csv", 'r') as file:
     data_df = pd.read_csv(file)
 
+data_df.columns = ["fecha","demanda"]
 data_df.to_sql('forecasts', con=engine, index=True, index_label='id', if_exists='replace')
 
 with open("shifts.csv", 'r') as file:
