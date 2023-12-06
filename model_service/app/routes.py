@@ -1,23 +1,17 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response
 import pandas as pd
 from math import ceil
+from .utils import two_highest_keyvalue
 
-app = Flask(__name__)
-
-def two_highest_keyvalue(dicc):
-  dicc_copy = dict(dicc)
-  key1 = max(dicc_copy, key=dicc_copy.get)
-  del dicc_copy[key1]
-  key2 = max(dicc_copy, key=dicc_copy.get)
-  return [key1, key2]
+bp = Blueprint('routes', __name__)
 
 # Test route
-@app.route('/test', methods=['GET'])
+@bp.route('/test', methods=['GET'])
 def test():
   return make_response(jsonify({'message': 'test route'}), 200)
 
 # Route for availability calculation
-@app.route('/calculate_availability', methods=['POST'])
+@bp.route('/calculate_availability', methods=['POST'])
 def calculate_availability():
   # Retrieve the JSON data from the request body
   try:

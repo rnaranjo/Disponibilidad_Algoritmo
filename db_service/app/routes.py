@@ -1,57 +1,19 @@
-from flask import Flask, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
+from flask import Blueprint, jsonify, make_response
+from .models import db, Forecast, Availability
 import pandas as pd
 from datetime import datetime
 import requests
 import json
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@postgres:5432/postgres'
-
-db = SQLAlchemy(app)
-
-# Database models
-class Forecast(db.Model):
-  __tablename__ = 'forecasts'
-
-  id = db.Column(db.Integer, primary_key=True)
-  fecha = db.Column(db.Date, nullable=False)
-  demanda = db.Column(db.Integer, nullable=False)
-
-  def json(self):
-    return {
-      'id': self.id,
-      'fecha': self.fecha,
-      'demanda': self.demanda
-    }
-
-class Shift(db.Model):
-  __tablename__ = 'shifts'
-
-  id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(255), nullable=False)
-  Inicio_Turno = db.Column(db.DateTime, nullable=False)
-  Fin_Turno = db.Column(db.DateTime, nullable=False)
-  Tipo_Turno = db.Column(db.String(50), nullable=False)
-
-
-class Availability(db.Model):
-  __tablename__ = 'availabilities'
-
-  id = db.Column(db.Integer, primary_key=True)
-  collaborator = db.Column(db.String(255), nullable=False)
-  date = db.Column(db.Date, nullable=False)
-  availability = db.Column(db.Integer, nullable=False)
-  week = db.Column(db.Integer, nullable=False)
-  day = db.Column(db.Integer, nullable=False)
+bp = Blueprint('routes', __name__)
 
 # Test route, see if service is running by connecting to host:port/test
-@app.route('/test', methods=['GET'])
+@bp.route('/test', methods=['GET'])
 def test():
   return make_response(jsonify({'message': 'test route'}), 200)
 
 # Route for storage of availability calculations
-@app.route('/write_availability', methods=['GET'])
+@bp.route('/write_availability', methods=['GET'])
 def write_availability():
   # Query all forecasts for availability calculations
   forecasts_query = Forecast.query.all()
