@@ -32,9 +32,11 @@ Hacer esto no generará cambios en la base de datos.
 
 ### Respuestas a preguntas conceptuales
 
-1. 
+# Pregunta 1
+Asumiendo que tanto la demanda como la disponibilidad deba ser calculada en intervalos de 15 minutos
 
-2. Es posible levantar los servicios descritos como una aplicación monolítica. Dado que la aplicación es relativamente pequeña a
+# Pregunta 2
+Es posible levantar los servicios descritos como una aplicación monolítica. Dado que la aplicación es relativamente pequeña a
 estas alturas, es relativamente más sencillo desarrollarla como un único servicio que múltiples microservicios (por ejemplo, no
 habría necesidad de realizar la consulta entre el servicio de base de datos y del modelo) y menos costoso en términos de recursos,
 ya que existe redundancia entre los microservicios que podría evitarse levantando todo en un único servicio. Sin embargo, a
@@ -55,13 +57,16 @@ de estos, lo cual permite solucionar cada caso de manera particular.
 Por último, usar microservicios permite implementar con mayor facilidad servicios personalizados para clientes con requerimientos
 específicos, ya que estos pueden ser desarrollados independientemente del resto de la funcionalidad del sistema.
 
-3. En caso de necesitar levantar este servicio múltiples veces, se puede hacer uso de la funcionalidad de réplicas de docker. Esto
+# Pregunta 3
+En caso de necesitar levantar este servicio múltiples veces, se puede hacer uso de la funcionalidad de réplicas de docker. Esto
 permite escalar la aplicación de manera horizontal, poniendo a disposición múltiples containers con la misma imagen. Esto puede
 lograrse agregando al servicio en el archivo docker-compose.yml:
 
+```
     deploy:
       mode: replicated
       replicas: 1000
+```
 
 Cabe destacar que crear tantas réplicas puede traer altos costos de uso de memoria, por lo tanto hacer uso de un load balancer
 apropiado o alguna herramienta de orquestación como Docker Swarm o Kubernetes.
