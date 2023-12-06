@@ -33,7 +33,27 @@ Hacer esto no generará cambios en la base de datos.
 # Respuestas a preguntas conceptuales
 
 ### Pregunta 1
-Asumiendo que tanto la demanda como la disponibilidad deba ser calculada en intervalos de 15 minutos
+Asumiendo que tanto la demanda como la disponibilidad deba ser calculada en intervalos de 15 minutos, lo primero que debería
+realizarse es una migración a la base de datos para actualizar los tipos de datos de DATE a DATETIME. Para actualizar el código actual y usar incrementos de 15 minutos en lugar de 1 día, se pueden realizar los siguientes pasos:
+
+- Replicar cada columna de día 96 veces. Luego, ordenar por la columna de fecha de menor a mayor.
+
+- Crear un objeto timedelta con espacio de 15 minutos de la siguiente manera:
+```
+time_deltas = pd.to_timedelta(range(96), unit='T')*15
+```
+
+- Replicar este dataframe tantas veces como días hayan en la solución.
+
+- Sumar las columnas de fecha del dataframe anterior a la columna del timedelta.
+
+Una vez finalizado este proceso para cada dataframe de la solución, en lugar de las columnas de fecha se tendrá el tiempo
+de cada día en incrementos de 15 minutos. Esto podría implementarse como una función para actualizar cada dataframe que necesite
+la fecha.
+
+Finalmente, se deberá adaptar el resto del código para considerar el hecho de que habrán múltiples demandas por día. Por ejemplo,
+la variable "dates" debería construirse con los datetime únicos en lugar de las fechas y la variable "b2" debería dividirse por 96
+para considerar los 96 valores diarios para la demanda promedio.
 
 ### Pregunta 2
 Es posible levantar los servicios descritos como una aplicación monolítica. Dado que la aplicación es relativamente pequeña a
