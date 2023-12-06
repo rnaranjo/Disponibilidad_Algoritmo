@@ -25,12 +25,15 @@ def calculate_availability():
   forecast_json = json_data["forecasts"]
   forecast_by_day = pd.read_json(forecast_json)
 
+  # Set algorithm parameters
   k1= 1
   k2 = 2
   W_real = 9
   
+  # Convert dates to proper format
   forecast_by_day['fecha'] = pd.to_datetime(forecast_by_day['fecha'], unit='ms')
   dates = forecast_by_day['fecha'].dt.date.unique()
+  # Apply steps of availability calculation algorithm
   max_wf_wk = forecast_by_day.query('day==7 or day==6')['demanda'].max()
   b1 = ceil((k2 * max_wf_wk) / (k2-k1))
   D_week=0
@@ -39,8 +42,10 @@ def calculate_availability():
     D=0
     for i in d:
       D += i
+
     if D > D_week:
       D_week = D
+
   b2 = ceil(D/5)
   b3 = forecast_by_day['demanda'].max()
 
@@ -49,6 +54,7 @@ def calculate_availability():
   if W_real > W:
     print("Workforce is enough, surplus: ", W_real-W)
     free_wf_wk = ceil(W_real*k1/k2)
+
   else:
     print("Workforce is not enough, deficit: ", W-W_real)
     free_wf_wk = ceil(W_real*k1/k2)
@@ -57,7 +63,6 @@ def calculate_availability():
 
   max_demanda_per_weekend = {w:forecast_by_day[forecast_by_day['week']==w].query('day==7 or day==6')['demanda'].max() for w in forecast_by_day['week'].unique()}
   forecast_by_day['surplus'] = forecast_by_day.apply(lambda row: W_real - row['demanda'] if row['day'] not in [6, 7] else W_real - max_demanda_per_weekend[row['week']], axis=1)
-  max_dda_wk = forecast_by_day[(forecast_by_day['day']==7) | (forecast_by_day['day']==6)]['demanda'].max()
 
   # Caso 1:2
   collab_list = [i for i in range(W_real)]
