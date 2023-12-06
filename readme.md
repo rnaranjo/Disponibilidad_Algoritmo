@@ -1,4 +1,4 @@
-### Instrucciones para la ejecución:
+# Instrucciones para la ejecución:
 
 Antes de iniciar los contenedores de db_service y model_service, debe haber un network en docker llamada backend. Este se crea
 al ejecutar el contendor "db_setup". Cada contenedor puede ser ejecutado desde su carpeta usando el comando:
@@ -30,12 +30,12 @@ request con la conversión a json de un dataframe pandas con los datos de foreca
 
 Hacer esto no generará cambios en la base de datos.
 
-### Respuestas a preguntas conceptuales
+# Respuestas a preguntas conceptuales
 
-# Pregunta 1
+### Pregunta 1
 Asumiendo que tanto la demanda como la disponibilidad deba ser calculada en intervalos de 15 minutos
 
-# Pregunta 2
+### Pregunta 2
 Es posible levantar los servicios descritos como una aplicación monolítica. Dado que la aplicación es relativamente pequeña a
 estas alturas, es relativamente más sencillo desarrollarla como un único servicio que múltiples microservicios (por ejemplo, no
 habría necesidad de realizar la consulta entre el servicio de base de datos y del modelo) y menos costoso en términos de recursos,
@@ -57,7 +57,7 @@ de estos, lo cual permite solucionar cada caso de manera particular.
 Por último, usar microservicios permite implementar con mayor facilidad servicios personalizados para clientes con requerimientos
 específicos, ya que estos pueden ser desarrollados independientemente del resto de la funcionalidad del sistema.
 
-# Pregunta 3
+### Pregunta 3
 En caso de necesitar levantar este servicio múltiples veces, se puede hacer uso de la funcionalidad de réplicas de docker. Esto
 permite escalar la aplicación de manera horizontal, poniendo a disposición múltiples containers con la misma imagen. Esto puede
 lograrse agregando al servicio en el archivo docker-compose.yml:
